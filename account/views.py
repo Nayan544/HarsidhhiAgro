@@ -29,6 +29,7 @@ def register(request):
             phone_number = form.cleaned_data['phone_number']
             password = form.cleaned_data['password']
             confirm_password = form.cleaned_data['confirm_password']
+            print "Register"
             if confirm_password == password:
                 User.objects.create(username=username, email=email, phone_number=phone_number,password=make_password(password))
                 return redirect('login')
