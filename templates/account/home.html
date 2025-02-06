@@ -1,0 +1,22 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+
+<h2>Products</h2>
+<div class="container">
+<ul class="d-flex" style="gap: 50px;">
+    {% for product in products %}
+    <li>
+        <h3>{{ product.name }}</h3> 
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:150px;height:auto;">
+        {% endif %}
+        <p>Rs.{{ product.price }}</p>
+        <p>{{ product.description }}</p>
+        <button type="submit" class="btn btn-primary"><a href="{% url 'add_to_cart' product.id %}">Add to Cart</a></button>
+    </li>
+    {% endfor %}
+</ul>
+</div>
+
+{% endblock %}

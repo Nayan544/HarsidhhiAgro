@@ -1,0 +1,42 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+<h2>Your Cart</h2>
+
+{% if cart_items %}
+<table border="1">
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total</th>
+        <th>Actions</th>
+    </tr>
+    {% for item in cart_items %}
+    <tr>
+        <td>{{ item.product.name }}</td>
+        <td>
+            <form method="POST" action="{% url 'update_cart' item.id %}">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
+                <button type="submit">Update</button>
+            </form>
+        </td>
+        <td>${{ item.product.price }}</td>
+        <td>${{ item.get_total_price }}</td>
+        <td>
+            <a href="{% url 'remove_from_cart' item.id %}">Remove</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Total: ${{ total_price }}</h3>
+
+{% else %}
+<p>Your cart is empty.</p>
+{% endif %}
+
+<a href="{% url 'home' %}">Continue Shopping</a>
+
+{% endblock %}

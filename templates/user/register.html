@@ -1,0 +1,36 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+  <body class="hold-transition register-page">
+    <div class="register-box">
+      <div class="card">
+        <div class="register-logo">
+          <a href="{% url 'home'%}"><b>Harsidhhi Agro</b></a>
+        </div>
+        <div class="card-body register-card-body">
+          <p class="login-box-msg">Register a new membership</p>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="card-body">
+              {{form.as_p}}
+            </div>
+            <div class="d-grid gap-2 col-6 mx-auto">
+              <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+            <div class="social-auth-links text-center">
+            <p>Already have an account?<a href="{% url 'login' %}">Login here</a></p>
+            </div>
+          </form>
+        <!-- /.form-box -->
+      </div><!-- /.card -->
+    </div>
+  </body>
+</html>
+{% endblock content %}

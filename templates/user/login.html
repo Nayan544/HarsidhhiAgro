@@ -1,0 +1,40 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+<style>
+  /* Full page height */
+  .login-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center horizontally & vertically */
+    width: 100%;
+    max-width: 400px; /* Limit form width */
+  }
+</style>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4 login-container">
+      <div class="card">
+        <div class="login-logo">
+          <a href="{% url 'home'%}"><b>Harsidhhi Agro</b></a>
+        </div>
+        <div class="card-body login-card-body">
+          <form method="post" novalidate>
+            {% csrf_token %}  
+            <div class="card-body">
+              {{form.as_p}}
+              <div class="d-grid gap-2 col-6 mx-auto">
+                <button type="submit" class="btn btn-primary">Login</button>
+              </div>
+            </div>
+          </form>
+          <p class="mb-1"><a href="{% url 'password_reset' %}#">I forgot my password</a></p>
+          <p class="mb-0">Don't have an account?<a href="{% url 'register' %}" class="text-center">Register here</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
