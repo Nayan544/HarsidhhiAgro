@@ -10,26 +10,18 @@
       <li class="nav-item">
         <a class="nav-link" href="{% url 'home' %}">Harsidhhi Agro</a>
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Categories
-        </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            {% for category in categories %}
-            <li>
-                <a class="dropdown-item" href="{% url 'category_detail' category.id %}">
-                    {{ category.name }}
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
-        
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'product' %}">Products</a>
+      </li>
     </ul>
     
   
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
           </li>

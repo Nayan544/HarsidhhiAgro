@@ -1,0 +1,13 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+<h2>New Vendor</h2>
+<form method="POST">
+    {% csrf_token %}
+    <div class="card-body">
+        {{form.as_p}}
+    </div>
+    <button type="submit">Save Vendor</button>
+</form>
+<a href="{% url 'vendor_list' %}">Back to Vendor List</a>
+{% endblock %}

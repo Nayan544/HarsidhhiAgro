@@ -1,17 +1,43 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from .models import Category, Product, Cart, CartItem
-from .forms import Register,Login
+from .forms import Register,Login,VendorForm
 from django.contrib import messages
-from .models import User
+from .models import User,Vendor,Slider
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.hashers import make_password
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 
 def home(request):
+    sliders = Slider.objects.all()
+    products = Product.objects.all()
+    return render(request, 'account/home.html', {'sliders': sliders, 'products': products})
+
+
+def product(request):
     categories = Category.objects.all()
     products = Product.objects.all()
-    return render(request, 'account/home.html', {'categories': categories, 'products': products})
+    return render(request, 'account/product.html', {'categories': categories, 'products': products})
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    return render(request, 'account/product_detail.html', {'product': product})
+
+
+def product_list(request, category_id=None):
+    categories = Category.objects.all()
+    
+    if category_id:
+        category = get_object_or_404(Category, id=category_id)
+        products = Product.objects.filter(category=category)
+    else:
+        products = Product.objects.all()
+
+    return render(request, 'account/product.html', {
+        'categories': categories,
+        'products': products,
+        'selected_category': category_id
+    })
 
 def category_detail(request, category_id):
     category = Category.objects.get(id=category_id)
@@ -29,7 +55,6 @@ def register(request):
             phone_number = form.cleaned_data['phone_number']
             password = form.cleaned_data['password']
             confirm_password = form.cleaned_data['confirm_password']
-            print "Register"
             if confirm_password == password:
                 User.objects.create(username=username, email=email, phone_number=phone_number,password=make_password(password))
                 return redirect('login')
@@ -101,3 +126,24 @@ def update_cart(request, item_id):
         else:
             cart_item.delete()
     return redirect('view_cart')
+
+
+def vendor_list(request):
+    vendors = Vendor.objects.all()
+    return render(request, 'vendor/vendor_list.html', {'vendors': vendors})
+
+def add_vendor(request):
+    if request.method == "POST":
+        form = VendorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('vendor_list')
+    else:
+        form = VendorForm()
+
+    return render(request, 'vendor/add_vendor.html', {'form': form})
+
+
+
+def profile(request):
+    return render(request, 'user/profile.html')

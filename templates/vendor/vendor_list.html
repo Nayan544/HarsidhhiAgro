@@ -1,0 +1,11 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+<h2>Vendor List</h2>
+<a href="{% url 'add_vendor' %}">Add New Vendor</a>
+<ul>
+    {% for vendor in vendors %}
+    <li>{{ vendor.name }} - {{ vendor.email }} - {{ vendor.phone }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

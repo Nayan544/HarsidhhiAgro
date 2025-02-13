@@ -1,5 +1,5 @@
 from django import forms
-from .models import AbstractUser
+from .models import AbstractUser,Vendor
 from django.core.validators import MinLengthValidator
 
 
@@ -32,3 +32,8 @@ class Login(forms.Form):
         strip=False,
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
     )
+
+class VendorForm(forms.ModelForm):
+    class Meta:
+        model = Vendor
+        fields = ['name', 'email', 'phone', 'address']

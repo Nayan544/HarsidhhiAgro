@@ -1,0 +1,30 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+
+<div>
+  <!-- Category Filter -->
+  <div class="mb-3">
+    <h5>Filter by Category:</h5>
+    <a href="{% url 'product' %}" class="btn btn-secondary {% if not selected_category %}active{% endif %}">All</a>
+    {% for category in categories %}
+        <a href="{% url 'filtered_products' category.id %}" class="btn btn-secondary {% if selected_category == category.id %}active{% endif %}">
+            {{ category.name }}
+        </a>
+    {% endfor %}
+  </div>
+  <!-- Product Listing -->
+  <ul class="row" style="gap: 30px;">
+      {% for product in products %}
+      <div class="card col-md-2" style="width: 18rem;">
+        <a href="{% url 'filtered_products' product.id %}"><img src="{{ product.image.url }}" class="card-img-top" alt="..." ></a>
+
+          <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text"><b>Price</b> Rs.{{ product.price }}</p>
+            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
+          </div>
+        </div>
+      {% endfor %}
+  </ul>
+{% endblock %}
