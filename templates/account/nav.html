@@ -14,10 +14,13 @@
         <a class="nav-link" href="{% url 'product' %}">Products</a>
       </li>
     </ul>
-    
-  
+
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+      <!-- Cart Link with Item Count -->
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'view_cart' %}">Cart</a>
+      </li>
       {% if user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'profile' %}">Profile</a>

@@ -2,9 +2,63 @@
 
 {% block content %}
 
-<div>
+<style>
+  .product-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+  }
+
+  .product-card {
+      width: 250px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease-in-out;
+      background: white;
+  }
+
+  .product-card:hover {
+      transform: translateY(-5px);
+  }
+
+  .product-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-bottom: 1px solid #ddd;
+  }
+
+  .product-card-body {
+      padding: 15px;
+      text-align: center;
+  }
+
+  .product-card h5 {
+      font-size: 18px;
+      margin-bottom: 10px;
+  }
+
+  .product-card .btn {
+      width: 100%;
+  }
+
+  .category-filter {
+      text-align: center;
+      margin-bottom: 20px;
+  }
+
+  .category-filter a {
+      margin: 5px;
+  }
+</style>
+
+<div style="margin-bottom: 100px;">
   <!-- Category Filter -->
-  <div class="mb-3">
+  <div class="category-filter">
     <h5>Filter by Category:</h5>
     <a href="{% url 'product' %}" class="btn btn-secondary {% if not selected_category %}active{% endif %}">All</a>
     {% for category in categories %}
@@ -13,18 +67,27 @@
         </a>
     {% endfor %}
   </div>
-  <!-- Product Listing -->
-  <ul class="row" style="gap: 30px;">
-      {% for product in products %}
-      <div class="card col-md-2" style="width: 18rem;">
-        <a href="{% url 'filtered_products' product.id %}"><img src="{{ product.image.url }}" class="card-img-top" alt="..." ></a>
 
-          <div class="card-body">
-            <h5 class="card-title">{{ product.name }}</h5>
-            <p class="card-text"><b>Price</b> Rs.{{ product.price }}</p>
-            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
-          </div>
+  <!-- Product Listing -->
+  <div class="product-container">
+      {% for product in products %}
+      <div class="product-card">
+        {% if product.images.all %}
+          <a href="{% url 'product_detail' product.id %}">
+              <img src="{{ product.images.all.0.image.url }}" alt="Product Image">
+          </a>
+        {% else %}
+          <img src="https://via.placeholder.com/250" alt="No Image Available">
+        {% endif %}
+
+        <div class="product-card-body">
+          <h5>{{ product.name }}</h5>
+          <p><b>Price:</b> Rs.{{ product.price }}</p>
+          <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
         </div>
+      </div>
       {% endfor %}
-  </ul>
+  </div>
+</div>
+
 {% endblock %}

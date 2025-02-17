@@ -28,10 +28,15 @@
     </div>
     <h3 class="text-center mb-3">Our Best Products</h3>
     <div style="margin-bottom: 100px;">
-        <ul class="row" style=" gap: 30px;">
+        <ul class="row justify-content-center mx-0">
             {% for product in products %}
-            <div class="card col-md-2" style="width: 18rem;">
-                <a href="{% url 'product_detail' product.id %}"><img src="{{ product.image.url }}" class="card-img-top" alt="..." style="max-height: 20  0px;"></a>
+            <div class="card col-2 offset-1 mx-2">
+                {% if product.images.all %}
+                    <a href="{% url 'product_detail' product.id %}"><img src="{{ product.images.all.0.image.url }}" class="card-img-top" alt="Product Image"></a>
+                {% else %}
+                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="No Image Available">
+                {% endif %}
+
                 <div class="card-body">
                   <h5 class="card-title">{{ product.name }}</h5>
                   <p class="card-text"><b>Price</b> Rs.{{ product.price }}</p>
@@ -41,7 +46,11 @@
         </ul>
         <!-- <a href="{% url 'product' %}" class="btn btn-primary">View more...</a> -->
     </div>
-    <section id="connect-buyer-wrapper">
+    <!-- View More Products Button -->
+    <div class="text-center mt-3" style="margin-bottom: 100px;">
+        <a href="{% url 'product' %}" class="btn btn-outline-primary">View All Products</a>
+    </div>
+    <section id="connect-buyer-wrapper" style="margin-bottom: 100px;">
         <div class="bg-white">
            <div class="row">
               <div class="col-md-3" id="connect-buyer">

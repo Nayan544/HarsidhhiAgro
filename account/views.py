@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 
 def home(request):
     sliders = Slider.objects.all()
-    products = Product.objects.all()
+    products = Product.objects.all().order_by('id')[:5]
     return render(request, 'account/home.html', {'sliders': sliders, 'products': products})
 
 
@@ -126,6 +126,20 @@ def update_cart(request, item_id):
         else:
             cart_item.delete()
     return redirect('view_cart')
+
+
+def checkout(request):
+    if not request.user.is_authenticated:
+        return redirect('login')  # Redirect if not logged in
+
+    cart = Cart.objects.filter(user=request.user).first()
+    if not cart:
+        return redirect('cart')  # Redirect if cart is empty
+
+    cart_items = cart.cart_items.all()
+    total_price = sum(item.get_total_price() for item in cart_items)
+
+    return render(request, 'account/checkout.html', {'cart_items': cart_items, 'total_price': total_price})
 
 
 def vendor_list(request):
