@@ -1,5 +1,5 @@
 from django import forms
-from .models import AbstractUser,Vendor
+from .models import AbstractUser,Vendor,ProductReview
 from django.core.validators import MinLengthValidator
 
 
@@ -34,6 +34,18 @@ class Login(forms.Form):
     )
 
 class VendorForm(forms.ModelForm):
+    address = forms.CharField(widget=forms.Textarea(attrs={'rows': 3, 'cols': 40}))
+    message = forms.CharField(widget=forms.Textarea(attrs={'rows': 3, 'cols': 40}))
+
     class Meta:
         model = Vendor
-        fields = ['name', 'email', 'phone', 'address']
+        fields = ['name', 'email', 'phone', 'address', 'message']
+
+
+class ProductReviewForm(forms.ModelForm):
+    rating = forms.IntegerField(widget=forms.HiddenInput())
+    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': 3, 'cols': 40}))
+
+    class Meta:
+        model = ProductReview
+        fields = ['rating', 'comment']

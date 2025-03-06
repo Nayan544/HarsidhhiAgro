@@ -1,7 +1,5 @@
 {% extends 'account/base.html' %}
-
 {% block content %}
-
 <div class="container mt-4" style="margin-bottom: 100px;">
     
     <div class="row" style="align-items: center;">
@@ -23,10 +21,50 @@
             <h2>{{ product.name }}</h2>
             <p>{{ product.description }}</p>
             <h4>Price: Rs.{{ product.price }}</h4>
-            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
-            <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary" style="margin-bottom: 50px;">Add to Cart</a>
+            <a href="{% url 'home' %}" class="btn btn-secondary" style="margin-bottom: 50px;">Back to Home</a>
+        
+            <!-- Review Form -->
+            {% if user.is_authenticated %}
+            <h3>Add a Review:</h3>
+            <form method="post">
+                {% csrf_token %}
+            
+               <div>
+                <div id="star-rating">
+                    <span class="star" data-value="1"><i class="fa fa-star"></i></span>
+                    <span class="star" data-value="2"><i class="fa fa-star"></i></span>
+                    <span class="star" data-value="3"><i class="fa fa-star"></i></span>
+                    <span class="star" data-value="4"><i class="fa fa-star"></i></span>
+                    <span class="star" data-value="5"><i class="fa fa-star"></i></span>
+                </div>
+            
+                <input type="hidden" name="rating" id="rating-input">
+                {{ form.comment }}
+               </div>
+            
+                
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+            {% else %}
+            <p><a href="{% url 'login' %}">Login</a> to leave a review.</p>
+            {% endif %}
         </div>
     </div>
+    <!-- Display Average Rating -->
+    <p><strong>Average Rating:</strong> ⭐ {{ product.average_rating|floatformat:1 }}/5</p>
+
+    <!-- Display Reviews -->
+    <h3>Reviews:</h3>
+    {% for review in reviews %}
+        <div class="border p-2 mb-2">
+            <strong>{{ review.user.username }}</strong> ⭐ {{ review.rating }}/5 <br>
+            <p>{{ review.comment }}</p>
+            <small>{{ review.created_at }}</small>
+        </div>
+    {% empty %}
+        <p>No reviews yet. Be the first to review!</p>
+    {% endfor %}
 </div>
 
 <!-- JavaScript to Change Main Image -->
@@ -34,7 +72,26 @@
     function changeMainImage(element) {
         document.getElementById("mainImage").src = element.src;
     }
-</script>
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const stars = document.querySelectorAll(".star");
+        const ratingInput = document.getElementById("rating-input");
+    
+        stars.forEach(star => {
+            star.addEventListener("click", function () {
+                let value = this.getAttribute("data-value");
+                ratingInput.value = value;  // Set hidden input value
+    
+                // Highlight selected stars
+                stars.forEach(s => s.classList.remove("selected"));
+                for (let i = 0; i < value; i++) {
+                    stars[i].classList.add("selected");
+                }
+            });
+        });
+    });
+    </script>
 
 <!-- Styling -->
 <style>
@@ -57,6 +114,16 @@
 
     .thumbnail-slider img:hover {
         border: 2px solid #007bff;
+    }
+
+    .star {
+        font-size: 24px;
+        cursor: pointer;
+        color: gray;
+    }
+
+    .star.selected {
+        color: gold;
     }
 </style>
 

@@ -17,11 +17,16 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-      <!-- Cart Link with Item Count -->
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'view_cart' %}">Cart</a>
+        <a class="nav-link" href="{% url 'add_vendor' %}">vendor</a>
       </li>
       {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'view_cart' %}">Cart</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'order_history' %}">Order History</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'profile' %}">Profile</a>
           </li>

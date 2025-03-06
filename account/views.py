@@ -1,12 +1,15 @@
 from django.shortcuts import render,redirect, get_object_or_404
-from .models import Category, Product, Cart, CartItem
-from .forms import Register,Login,VendorForm
+from .models import Category, Product, Cart, CartItem ,Order, OrderItem
+from .forms import Register,Login,VendorForm,ProductReviewForm
 from django.contrib import messages
 from .models import User,Vendor,Slider
 from django.contrib.auth import login,authenticate,logout
 from django.contrib.auth.hashers import make_password
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.core.mail import send_mail
+from django.conf import settings
 
 def home(request):
     sliders = Slider.objects.all()
@@ -21,7 +24,24 @@ def product(request):
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    return render(request, 'account/product_detail.html', {'product': product})
+    reviews = product.reviews.all()
+    
+    if request.method == "POST":
+        form = ProductReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.save()
+            return redirect('product_detail', product_id=product.id)
+    else:
+        form = ProductReviewForm()
+
+    return render(request, "account/product_detail.html", {
+        'product': product,
+        'reviews': reviews,
+        'form': form
+    })
 
 
 def product_list(request, category_id=None):
@@ -112,6 +132,7 @@ def view_cart(request):
 @login_required
 def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(CartItem, id=item_id)
+    print ('remove from cart',cart_item)
     cart_item.delete()
     return redirect('view_cart')
 
@@ -128,18 +149,44 @@ def update_cart(request, item_id):
     return redirect('view_cart')
 
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Cart, Order, OrderItem
+
+@login_required
 def checkout(request):
-    if not request.user.is_authenticated:
-        return redirect('login')  # Redirect if not logged in
-
     cart = Cart.objects.filter(user=request.user).first()
-    if not cart:
-        return redirect('cart')  # Redirect if cart is empty
+    
+    if not cart or not cart.cart_items.exists():
+        return redirect("cart")  # Redirect to cart if empty
 
+    if request.method == "POST":
+        # Process the order (your existing order creation logic)
+        order = Order.objects.create(
+            user=request.user, 
+            total_price=cart.get_total_price(), 
+            is_completed=True
+        )
+
+        # Move cart items to order
+        for cart_item in cart.cart_items.all():
+            OrderItem.objects.create(
+                order=order,
+                product=cart_item.product,
+                quantity=cart_item.quantity,
+                price=cart_item.get_total_price(),
+            )
+
+        # Clear cart
+        cart.cart_items.all().delete()
+
+        return redirect("thank_you")  # Redirect to thank you page
+
+    # Pass cart items and total price to the template
     cart_items = cart.cart_items.all()
-    total_price = sum(item.get_total_price() for item in cart_items)
+    total_price = cart.get_total_price()
 
-    return render(request, 'account/checkout.html', {'cart_items': cart_items, 'total_price': total_price})
+    return render(request, "account/checkout.html", {"cart_items": cart_items, "total_price": total_price})
 
 
 def vendor_list(request):
@@ -150,7 +197,16 @@ def add_vendor(request):
     if request.method == "POST":
         form = VendorForm(request.POST)
         if form.is_valid():
-            form.save()
+            vendor = form.save()
+            
+            
+            subject = "New Vendor Added"
+            message = vendor.message
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list = ["nayandabhi544@gmail.com"]  
+            
+            send_mail(subject, message, from_email, recipient_list)
+            
             return redirect('vendor_list')
     else:
         form = VendorForm()
@@ -161,3 +217,14 @@ def add_vendor(request):
 
 def profile(request):
     return render(request, 'user/profile.html')
+
+
+def thank_you(request):
+    return render(request, "account/thank_you.html")
+
+
+
+@login_required
+def order_history(request):
+    orders = Order.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "account/order_history.html", {"orders": orders})

@@ -1,8 +1,6 @@
 {% extends 'account/base.html' %}
 
 {% block content %}
-<!-- cart/cart.html -->
-
 <html lang="en">
 
 <head>
@@ -10,84 +8,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Cart</title>
     <style>
-        .product-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            list-style: none;
-            padding: 0;
+        .cart-container {
+            width: 60%;
+            margin: auto;
         }
 
         .product-item {
-            flex: 1;
-            max-width: 250px;
-            margin: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
+            padding: 15px;
             border-radius: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            background-color: #fff;
         }
 
         .product-item img {
-            max-width: 100%;
-            height: 150px;
-            object-fit: cover;
+            width: 80px;
+            height: 80px;
             border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .product-details {
+            flex-grow: 1;
+            margin-left: 15px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .qty-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 0 5px;
         }
 
         .remove-btn {
-            display: block;
-            margin-top: 10px;
             background-color: red;
             color: white;
-            text-decoration: none;
             padding: 5px 10px;
             border-radius: 5px;
-        }
-
-        .buy-now-button {
-            display: inline-block;
-            margin-top: 10px;
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
-            padding: 5px 10px;
-            border-radius: 5px;
+            border: none;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
-
-    <h1>Your Shopping Cart</h1>
-
-    <div class="product-list">
-        {% for item in cart_items %}
-        <div class="product-item">
-            <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}">
-            <p><b>{{ item.product.name }}</b> ({{ item.quantity }})</p>
-            <p>Price: Rs.{{ item.product.price }}</p>
-            <a href="{% url 'remove_from_cart' item.id %}" class="remove-btn">Remove</a>
-        </div>
-        {% empty %}
-        <p>Your cart is empty.</p>
-        {% endfor %}
-    </div>
-
-    <p><b>Total Price:</b> Rs.{{ total_price }}</p>
-
-    <!-- Checkout Button -->
     {% if cart_items %}
-    <a href="{% url 'checkout' %}" class="btn btn-success">Proceed to Checkout</a>
+    <div class="cart-container">
+        <h1>Your Shopping Cart</h1>
+        {% for item in cart_items %}
+            <div class="product-item">
+                <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}">
+                <div class="product-details">
+                    <p><b>{{ item.product.name }}</b></p>
+                    <p>Price: Rs. <span class="item-price" data-price="{{ item.product.price }}">{{ item.product.price }}</span></p>
+                    <p>Subtotal: Rs. <span class="item-subtotal" data-item-id="{{ item.id }}">{{item.get_total_price}}</span></p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn decrease" data-item-id="{{ item.id }}">-</button>
+                        <span class="quantity" data-item-id="{{ item.id }}">{{ item.quantity }}</span>
+                        <button class="qty-btn increase" data-item-id="{{ item.id }}">+</button>
+                    </div>
+                </div>
+                <a href="{% url 'remove_from_cart' item_id=item.id %}" class="remove-btn" data-item-id="{{ item.id }}">Remove</a>
+            </div>
+        {% endfor %}
+        <p><b>Total Price: Rs. <span id="total-price">{{ total_price }}</span></b></p>
+        <a href="{% url 'checkout' %}" class="btn btn-success">Proceed to Checkout</a>
+    </div>
+    {% else %}
+        <h3 class="text-center mt-4">Your cart is empty.</h3>
+        
     {% endif %}
 
     <div class="text-center mt-3" style="margin-bottom: 100px;">
         <a href="{% url 'product' %}" class="btn btn-outline-primary">Continue Shopping</a>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            function updateTotalPrice() {
+                let total = 0;
+                document.querySelectorAll(".product-item").forEach(item => {
+                    const price = parseFloat(item.querySelector(".item-price").dataset.price);
+                    const qty = parseInt(item.querySelector(".quantity").innerText);
+                    const subtotalElem = item.querySelector(".item-subtotal");
+                    const subtotal = price * qty;
+                    subtotalElem.innerText = subtotal.toFixed(2);
+                    total += subtotal;
+                });
+                document.getElementById("total-price").innerText = total.toFixed(2);
+            }
 
+            document.querySelectorAll(".qty-btn").forEach(button => {
+                button.addEventListener("click", function() {
+                    const itemId = this.dataset.itemId;
+                    const quantityElem = document.querySelector(`.quantity[data-item-id='${itemId}']`);
+                    let quantity = parseInt(quantityElem.innerText);
+                    
+                    if (this.classList.contains("increase")) {
+                        quantity++;
+                    } else if (this.classList.contains("decrease")) {
+                        if (quantity > 1) {
+                            quantity--;
+                        }
+                    }
+                    
+                    quantityElem.innerText = quantity;
+                    updateTotalPrice();
+                });
+            });
+
+            document.querySelectorAll(".remove-btn").forEach(button => {
+                button.addEventListener("click", function() {
+                    const itemId = this.dataset.itemId;
+                    if (confirm("Are you sure you want to remove this item?")) {
+                        document.querySelector(`.product-item .remove-btn[data-item-id='${itemId}']`).parentElement.remove();
+                        updateTotalPrice();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
-
 {% endblock %}

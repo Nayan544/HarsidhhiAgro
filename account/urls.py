@@ -1,8 +1,8 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import (home,product,product_detail,category_detail,register,login_fun,logout_fun,
-                     add_to_cart, view_cart, remove_from_cart, update_cart,checkout,
-                     vendor_list,add_vendor,product_list,profile)
+                    add_to_cart, view_cart, remove_from_cart, update_cart,checkout,thank_you,
+                    order_history,vendor_list,add_vendor,product_list,profile)
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -20,6 +20,8 @@ urlpatterns = [
     path('cart/remove/<int:item_id>/', remove_from_cart, name='remove_from_cart'),
     path('cart/update/<int:item_id>/', update_cart, name='update_cart'),
     path('checkout/', checkout, name='checkout'),
+    path("thank-you/", thank_you, name="thank_you"),
+    path("order-history/", order_history, name="order_history"),
     path('vendors/', vendor_list, name='vendor_list'),
     path('vendors/add/', add_vendor, name='add_vendor'),
     path('profile/',profile, name='profile'),

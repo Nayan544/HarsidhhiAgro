@@ -1,0 +1,14 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <h1 class="text-success">Thank You for Your Order!</h1>
+    <p>Your order has been placed successfully.</p>
+    <p>We appreciate your business and will process your order shortly.</p>
+
+    <div class="mt-4">
+        <a href="{% url 'product' %}" class="btn btn-primary">Continue Shopping</a>
+        <a href="{% url 'order_history' %}" class="btn btn-secondary">View Your Orders</a>
+    </div>
+</div>
+{% endblock %}

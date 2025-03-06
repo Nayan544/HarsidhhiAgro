@@ -1,0 +1,43 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Your Order History</h2>
+
+    {% if orders %}
+        <div class="list-group mt-4">
+            {% for order in orders %}
+                <div class="list-group-item">
+                    <h5>Order ID: {{ order.id }}</h5>
+                    <p><b>Date:</b> {{ order.created_at }}</p>
+                    <p><b>Total Price:</b> Rs. {{ order.total_price }}</p>
+                    <p><b>Status:</b> {% if order.is_completed %} Completed {% else %} Pending {% endif %}</p>
+
+                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#orderDetails{{ order.id }}">
+                        View Details
+                    </button>
+
+                    <div class="collapse mt-3" id="orderDetails{{ order.id }}">
+                        <ul class="list-group">
+                            {% for item in order.items.all %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <b>{{ item.product.name }}</b> (x{{ item.quantity }})
+                                    </div>
+                                    <span>Rs. {{ item.price }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center mt-4">No orders found.</p>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{% url 'product' %}" class="btn btn-primary">Continue Shopping</a>
+    </div>
+</div>
+{% endblock %}
