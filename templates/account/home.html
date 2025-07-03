@@ -3,18 +3,18 @@
 {% block content %}
 
 <div class="mt-4">
-    <h2 class="text-center"><i> <b>Welcome to Harsidhhi Agro</b></i></h2>
+    <!-- <h2 class="text-center" style="margin-bottom: 35px;"><b>Welcome to Harsidhhi Agro</b></h2> -->
 
     <!-- Bootstrap Carousel -->
     <div id="sliderCarousel" class="carousel slide" data-bs-ride="carousel" style="margin-bottom: 100px;">
         <div class="carousel-inner">
             {% for slide in sliders %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <img src="{{ slide.image.url }}" class="d-block w-100" alt="{{ slide.title }}" style="height: 400px; object-fit: cover;">
+                <img src="{{ slide.image.url }}" class="d-block w-100" alt="#" style="height: 400px; object-fit: cover;">
                 {% if slide.title %}
-                <div class="carousel-caption d-none d-md-block">
+                <!-- <div class="carousel-caption d-none d-md-block">
                     <h5>{{ slide.title }}</h5>
-                </div>
+                </div> -->
                 {% endif %}
             </div>
             {% endfor %}
@@ -27,7 +27,7 @@
         </button>
     </div>
     <h3 class="text-center mb-3"><b>Our Best Products</b></h3>
-    <div style="margin-bottom: 100px;">
+    <div>
         <ul class="row justify-content-center mx-0">
             {% for product in products %}
             <div class="card col-2 offset-1 mx-2">
@@ -44,43 +44,104 @@
               </div>
             {% endfor %}
         </ul>
-        <!-- <a href="{% url 'product' %}" class="btn btn-primary">View more...</a> -->
     </div>
     <!-- View More Products Button -->
     <div class="text-center mt-3" style="margin-bottom: 100px;">
-        <a href="{% url 'product' %}" class="btn btn-outline-primary">View All Products</a>
+        <a href="{% url 'product' %}" class="btn btn-outline-dark">View All Products</a>
     </div>
-    <section id="connect-buyer-wrapper" style="margin-bottom: 100px;">
-        <div class="bg-white">
-           <div class="row">
-              <div class="col-md-3" id="connect-buyer">
-                 <div class="p-15" style="margin-left: 100px;">
-                    <h2>We connect <span class="blk"><b>Buyers</b> &amp; <b>Sellers</b></span></h2>
-                    <p>IndiaMART is India's largest online B2B marketplace, connecting buyers with suppliers.</p>
-                    <ul>
-                       <li class="one">
-                          <i class="hm-icn6"></i>
-                          <p>Trusted Platform</p>
-                       </li>
-                       <li class="tc two">
-                          <i class="hm-icn7"></i>
-                          <p>Safe &amp; Secure</p>
-                       </li>
-                       <li class="tc tree">
-                          <i class="hm-icn8"></i>
-                          <p>Quick Assistance</p>
-                       </li>
-                    </ul>
-                 </div>
-              </div>
-
-              <div class="col-md-9">
-                    <div class="p-15 p-lg-0 pr">
-                        <img src="https://static.vecteezy.com/system/resources/thumbnails/007/626/326/small/world-food-day-two-human-hands-holding-ears-of-rice-and-coins-on-blurred-of-blue-sky-background-exchange-concept-free-photo.jpg" alt="..." style="height: 400px;"></a></div>
-                    </div>
-              </div>
-           </div>
-        </div>
-     </section>
 </div>
+
+<style>
+/* === General Spacing & Typography === */
+h2, h3 {
+  color: #2c3e50;
+}
+.card-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.card-text {
+  font-size: 14px;
+}
+
+/* === Product Cards Grid Styling === */
+.card {
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.card-img-top {
+  height: 300px;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/* === Carousel === */
+.carousel-inner img {
+  border-radius: 8px;
+}
+.carousel-caption h5 {
+  background-color: rgba(0, 0, 0, 0.6);
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+/* === Connect Buyer Section === */
+#connect-buyer-wrapper {
+  background: #f8f8f8;
+  padding: 40px 0;
+}
+#connect-buyer h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+#connect-buyer p {
+  font-size: 16px;
+  color: #444;
+}
+#connect-buyer ul {
+  list-style: none;
+  padding-left: 0;
+}
+#connect-buyer ul li {
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+}
+#connect-buyer ul li i {
+  margin-right: 10px;
+  color: #3498db;
+}
+
+/* === Responsive Fixes === */
+@media (max-width: 768px) {
+  .card.col-2 {
+    flex: 1 1 90%;
+    margin-bottom: 20px;
+  }
+  #connect-buyer {
+    margin-left: 0 !important;
+    text-align: center;
+  }
+  #connect-buyer-wrapper .row {
+    flex-direction: column-reverse;
+  }
+  #connect-buyer-wrapper img {
+    width: 100%;
+    height: auto !important;
+    object-fit: cover;
+  }
+}
+</style>
+
 {% endblock %}

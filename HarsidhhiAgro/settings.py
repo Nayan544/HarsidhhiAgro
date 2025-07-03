@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-bjc%g4a@+v=8pn0qo2=&%tf+^i1r3mnq4(u23)ggan2#25-2jo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'harsidhhiagro.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
 AUTH_USER_MODEL = 'account.User'
 
 

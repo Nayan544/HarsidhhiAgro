@@ -2,7 +2,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import (home,product,product_detail,category_detail,register,login_fun,logout_fun,
                     add_to_cart, view_cart, remove_from_cart, update_cart,checkout,thank_you,
-                    order_history,vendor_list,add_vendor,product_list,profile)
+                    order_history,vendor_list,add_vendor,product_list,profile,about,contact)
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -25,6 +25,8 @@ urlpatterns = [
     path('vendors/', vendor_list, name='vendor_list'),
     path('vendors/add/', add_vendor, name='add_vendor'),
     path('profile/',profile, name='profile'),
+    path('about/', about, name='about'),
+    path('contact/',contact, name='contact'),
 
 ]
 

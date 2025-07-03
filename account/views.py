@@ -228,3 +228,10 @@ def thank_you(request):
 def order_history(request):
     orders = Order.objects.filter(user=request.user).order_by("-created_at")
     return render(request, "account/order_history.html", {"orders": orders})
+
+def about(request):
+    return render(request, 'account/about.html')
+
+
+def contact(request):
+    return render(request, 'account/contact.html')

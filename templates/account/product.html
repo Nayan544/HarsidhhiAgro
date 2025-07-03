@@ -3,69 +3,114 @@
 {% block content %}
 
 <style>
+  .category-filter {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .category-filter h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .category-filter .btn {
+    margin: 5px 3px;
+  }
+
   .product-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 0 15px;
   }
 
   .product-card {
-      width: 250px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease-in-out;
-      background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    text-align: center;
   }
 
   .product-card:hover {
-      transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
   }
 
   .product-card img {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-      border-bottom: 1px solid #ddd;
+    width: 100%;
+    height: 250px;
+    object-fit: contain;      /* Keeps full image without cropping */
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
   }
 
   .product-card-body {
-      padding: 15px;
-      text-align: center;
+    padding: 15px;
+    text-align: center;
   }
 
-  .product-card h5 {
-      font-size: 18px;
-      margin-bottom: 10px;
+  .product-card-body h5 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #333;
   }
 
-  .product-card .btn {
-      width: 100%;
+  .product-card-body p {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
   }
 
-  .category-filter {
-      text-align: center;
-      margin-bottom: 20px;
+  .btn-outline-dark {
+    font-size: 0.9rem;
+    padding: 6px 12px;
   }
 
-  .category-filter a {
-      margin: 5px;
+  /* Responsive Fixes */
+  @media (max-width: 768px) {
+    .product-card img {
+      height: 180px;
+    }
+
+    .category-filter h4 {
+      font-size: 1rem;
+    }
+
+    .product-card-body h5 {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product-container {
+      grid-template-columns: 1fr;
+    }
+
+    .product-card img {
+      height: 160px;
+    }
+
+    .btn-outline-dark {
+      font-size: 0.85rem;
+    }
   }
 </style>
 
+<h5 style="text-align: center; font-size: xx-large; font-weight: bold;">Products</h5>
 <div style="margin-bottom: 100px;">
   <!-- Category Filter -->
   <div class="category-filter">
-    <h5>Filter by Category:</h5>
-    <a href="{% url 'product' %}" class="btn btn-secondary {% if not selected_category %}active{% endif %}">All</a>
-    {% for category in categories %}
-        <a href="{% url 'filtered_products' category.id %}" class="btn btn-secondary {% if selected_category == category.id %}active{% endif %}">
-            {{ category.name }}
-        </a>
-    {% endfor %}
+    <h4>Filter by Category:  
+      <a href="{% url 'product' %}" class="btn btn-outline-secondary {% if not selected_category %}active{% endif %}">All</a>
+      {% for category in categories %}
+          <a href="{% url 'filtered_products' category.id %}" class="btn btn-outline-secondary {% if selected_category == category.id %}active{% endif %}">
+              {{ category.name }}
+          </a>
+      {% endfor %}
+    </h4>
   </div>
 
   <!-- Product Listing -->
@@ -83,7 +128,7 @@
         <div class="product-card-body">
           <h5>{{ product.name }}</h5>
           <p><b>Price:</b> Rs.{{ product.price }}</p>
-          <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
+          <a href="{% url 'add_to_cart' product.id %}" class="btn btn-outline-dark">Add to Cart</a>
         </div>
       </div>
       {% endfor %}
