@@ -30,6 +30,11 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://harsidhhiagro.onrender.com",
+]
+
 AUTH_USER_MODEL = 'account.User'
 
 
